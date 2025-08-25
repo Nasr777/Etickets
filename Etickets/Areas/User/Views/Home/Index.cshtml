@@ -1,0 +1,77 @@
+﻿@* @{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+@model IEnumerable<Etickets.Models.Movie>
+
+
+@{
+    ViewBag.Title = "Available Movies";
+}
+
+<h2 class="mb-4">🎬 Available Movies</h2>
+
+<!-- 🔹 Filter Form -->
+<form method="get" asp-action="Index" class="mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <input type="text" name="MovieName" value="@ViewBag.MovieName" 
+                   class="form-control" placeholder="Search by Movie" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="CienmaName" value="@ViewBag.CienmaName" 
+                   class="form-control" placeholder="Search by Cinema" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="CategoryName" value="@ViewBag.CategoryName" 
+                   class="form-control" placeholder="Search by Category" />
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-primary w-100">🔍 Filter</button>
+        </div>
+    </div>
+</form>
+
+<!-- 🔹 Movie Cards -->
+<div class="row">
+    @foreach (var movie in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card shadow-lg h-100">
+                <img src="@Url.Content("~/ImagesMovie/" + movie.ImgUrl)" 
+                     class="card-img-top" alt="@movie.Name" 
+                     style="height:250px; object-fit:cover;" />
+
+                <div class="card-body">
+                    <h5 class="card-title">@movie.Name</h5>
+                    <p class="card-text text-muted">@movie.Category?.Name | @movie.Cinema?.Name</p>
+                    <p><strong>Price:</strong> $@movie.Price</p>
+                    <a asp-area="Users" asp-controller="Movies" asp-action="Details" asp-route-id="@movie.Id"
+                       class="btn btn-primary btn-sm">🎟 Book Now</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 🔹 Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@i" 
+                   asp-route-MovieName="@ViewBag.MovieName"
+                   asp-route-CienmaName="@ViewBag.CienmaName"
+                   asp-route-CategoryName="@ViewBag.CategoryName">
+                    @i
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
